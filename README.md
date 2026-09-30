@@ -1,8 +1,8 @@
 # 🖥️ Home Lab
 
-A self-hosted Linux infrastructure I built and run at home: network storage, **36 Docker containers across 20+ services**, reverse proxy with HTTPS, WireGuard VPN, network-wide DNS filtering, and layered backups.
+A self-hosted Linux infrastructure I built and run at home: network storage, **36 Docker containers across 20+ services**, reverse proxy with HTTPS, WireGuard VPN, network-wide DNS filtering, and daily ZFS snapshots.
 
-**Stack:** Ubuntu · TrueNAS · NFS · Docker Compose · Portainer · Nginx Proxy Manager · WireGuard · Pi-hole · rsync · cron
+**Stack:** Ubuntu · TrueNAS · NFS · Docker Compose · Portainer · Nginx Proxy Manager · WireGuard · Pi-hole · cron
 
 ---
 
@@ -69,7 +69,7 @@ flowchart LR
 - **TrueNAS** provides the storage layer, with the application host mounting six shares over **NFSv4.2** (media, Immich photo library, personal files, and a recycle bin)
 - **ZFS RAIDZ1** pool (4 drives) tolerates a single drive failure, and regular scrubs check data integrity
 - **Daily snapshots** at midnight with 14-week retention protect against accidental deletion and corruption
-- **rsync + cron scripts** back up service data and configs on a schedule
+- **Restore tested:** I've verified recovery by performing a test restore of backed-up data
 
 ## Repository Layout
 
@@ -86,7 +86,7 @@ homelab/
 │   ├── vaultwarden/
 │   └── ...
 ├── scripts/
-│   └── backup.sh         # rsync + cron backup script
+│   └── backup.sh         # planned: nightly rsync backup of Docker volumes
 └── .gitignore
 ```
 
@@ -98,7 +98,8 @@ homelab/
 
 ## Roadmap
 
-- [ ] Document and run a full restore test from TrueNAS snapshots and rsync backups
+- [ ] Document the restore procedure and repeat restore tests on a schedule
+- [ ] Automate nightly rsync + cron backups of Docker volumes and configs to the NAS
 - [ ] Add an offsite backup (cloud sync or replication to a second TrueNAS) to complete a 3-2-1 strategy
 - [ ] Add monitoring and alerting for disk, container, and service health
 - [ ] Publish sanitized Compose files for each stack
