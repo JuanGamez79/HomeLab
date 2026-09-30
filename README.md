@@ -29,15 +29,15 @@ flowchart LR
 |---|---|---|
 | Application host | Runs all Docker workloads, mounts NAS storage over NFS | Ubuntu |
 | Storage server | Bulk storage, snapshots, replication | TrueNAS |
-| DNS node | Network-wide DNS filtering | Pi-hole |
+| DNS node | Network-wide DNS filtering with Pi-hole | Ubuntu |
 
 ## Hardware
 
 | Machine | Details |
 |---|---|
 | Storage server | TrueNAS Community Edition 25.10.4 (Goldeye), Intel N100, 7.5 GiB RAM, ZFS pool of 4 drives in RAIDZ1 (7.28 TiB each, 21.2 TiB usable) |
-| Application host | Ubuntu laptop, *(specs to add)* |
-| DNS node | Laptop running Pi-hole, *(specs to add)* |
+| Application host | ASUS TUF Dash F15 laptop, Intel Core i7-11370H, 14 GiB RAM, 477 GB NVMe SSD, Ubuntu 26.04.1 LTS, Docker 29.8.1 |
+| DNS node | Dell Latitude 5490 laptop, Intel Core i7-8650U, 22 GiB RAM, Ubuntu 26.04 LTS, running Pi-hole |
 
 ## Services
 
@@ -59,13 +59,14 @@ flowchart LR
 
 - **Reverse proxy:** Nginx Proxy Manager routes each service to its own subdomain with HTTPS certificates
 - **Remote access:** WireGuard VPN running on the application host, reached through a DuckDNS dynamic DNS hostname that points to the router
+- **Dynamic DNS:** a cron job runs a DuckDNS update script every 5 minutes so the VPN hostname always follows the home IP
 - **DNS:** Pi-hole on a dedicated machine for network-wide filtering and local name resolution
 - **Firewall:** only required ports are forwarded; everything else stays internal
 - **Secrets:** no credentials in this repo. Each stack uses a `.env` file that is git-ignored, with a `.env.example` showing required variables
 
 ## Storage & Backups
 
-- **TrueNAS** provides the storage layer, with the application host mounting shares over **NFS**
+- **TrueNAS** provides the storage layer, with the application host mounting six shares over **NFSv4.2** (media, Immich photo library, personal files, and a recycle bin)
 - **ZFS RAIDZ1** pool (4 drives) tolerates a single drive failure, and regular scrubs check data integrity
 - **Daily snapshots** at midnight with 14-week retention protect against accidental deletion and corruption
 - **rsync + cron scripts** back up service data and configs on a schedule
