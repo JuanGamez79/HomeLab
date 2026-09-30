@@ -3,6 +3,10 @@
 A self-hosted Linux infrastructure I built and run at home: network storage, **36 Docker containers across 20+ services**, reverse proxy with HTTPS, WireGuard VPN, network-wide DNS filtering, and daily ZFS snapshots.
 
 **Stack:** Ubuntu · TrueNAS · NFS · Docker Compose · Portainer · Nginx Proxy Manager · WireGuard · Pi-hole · cron
+## Dashboard
+
+<img width="2724" height="1835" alt="dashboard" src="https://github.com/user-attachments/assets/998e30ba-1808-408c-9994-ba81cd620497" />
+
 
 ---
 
