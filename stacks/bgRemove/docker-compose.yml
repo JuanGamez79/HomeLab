@@ -1,0 +1,15 @@
+services:
+  rembg:
+    build:
+      context: ./rembg
+      dockerfile: Dockerfile
+    image: rembg-cpu
+    container_name: rembg
+    command: s --host 0.0.0.0 --port 7000
+    ports:
+      - "7000:7000"
+    volumes:
+      - rembg-cache:/root/.u2net
+    restart: unless-stopped
+volumes:
+  rembg-cache:

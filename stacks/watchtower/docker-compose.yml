@@ -1,0 +1,12 @@
+services:
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"         # remove old images
+      WATCHTOWER_REMOVE_VOLUMES: "true"  # optional, cleanup unused volumes
+      WATCHTOWER_POLL_INTERVAL: 86400    # check once per day (in seconds)
+      DOCKER_API_VERSION: "1.45"

@@ -1,0 +1,14 @@
+services:
+  metube:
+    image: ghcr.io/alexta69/metube
+    container_name: metube
+    restart: unless-stopped
+    ports:
+      - "8089:8081"
+    volumes:
+      - ./cookies.txt:/cookies.txt:ro
+      - ./downloads:/downloads
+    environment: 
+      DELETE_FILE_ON_TRASHCAN: true
+      CLEAR_COMPLETED_AFTER: 600
+      YTDL_OPTIONS: '{"cookiefile":"/cookies.txt"}'

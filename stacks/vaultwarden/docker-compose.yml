@@ -1,0 +1,15 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    environment:
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      SIGNUPS_ALLOWED: "true"
+      WEBSOCKET_ENABLED: "true"
+    volumes:
+      - ./data:/data
+    ports:
+      - "8085:80"     # change if 8085 already in use
+      - "3015:3012"   # change if 3015 already in use
+

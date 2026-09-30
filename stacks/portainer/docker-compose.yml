@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "9000:9000"   # Web UI
+      - "8000:8000"   # Edge agent tunnel (optional)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock   # Gives Portainer control of Docker
+      - portainer_data:/data                        # Persistent storage for Portainer config
+
+volumes:
+  portainer_data:

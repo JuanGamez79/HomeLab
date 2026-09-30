@@ -1,0 +1,24 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    ports:
+      - "8096:8096"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - UMASK=002
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - /mnt/storage-pool/media/movies:/media/movies
+      - /mnt/storage-pool/media/tv:/media/tv
+      - /mnt/storage-pool:/media/storage-pool
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

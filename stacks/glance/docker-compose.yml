@@ -1,0 +1,28 @@
+services:
+  glance:
+    container_name: glance
+    image: glanceapp/glance:latest
+    restart: unless-stopped
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./glance.yml:/app/config/glance.yml
+      - ./assets:/app/assets
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./glance.yml:/app/config/glance.yml
+      - ./assets:/app/assets
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    environment:
+      - JELLYFIN_URL=http://192.168.1.16:8096
+      - JELLYFIN_KEY=${JELLYFIN_KEY}
+      - IMMICH_URL=http://192.168.1.16:2283
+      - IMMICH_API_KEY=${IMMICH_API_KEY}
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      - YOUTUBE_CHANNEL_ID=UCtVd-utxxWBBJT8MWadzLnA
+      - JELLYFIN_USER_ID=${JELLYFIN_USER_ID}
+      - WGER_API_KEY=${WGER_API_KEY}
+      - WGER_URL=http://192.168.1.16:8090
+

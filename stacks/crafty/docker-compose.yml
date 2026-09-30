@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  crafty:
+    container_name: crafty_container
+    image: registry.gitlab.com/crafty-controller/crafty-4:latest
+    restart: always
+    environment:
+      TZ: Etc/UTC
+    ports:
+      - "8443:8443"          # Web UI (HTTPS)
+      - "8124:8124"          # Dynmap
+      - "19132:19132/udp"    # Bedrock
+      - "25500-25600:25500-25600" # Java server range
+    volumes:
+      - ./docker/backups:/crafty/backups
+      - ./docker/logs:/crafty/logs
+      - /Juan/servers:/crafty/servers
+      - ./docker/config:/crafty/app/config
+      - ./docker/import:/crafty/import
