@@ -10,17 +10,17 @@ A self-hosted Linux infrastructure I built and run at home: network storage, **3
 
 ```mermaid
 flowchart LR
-    Internet((Internet)) --> Router[Router / Firewall<br/>port forwarding]
+    Internet((Internet)) -.->|DuckDNS hostname| Router[Router / Firewall<br/>port forwarding]
     Router -->|HTTPS 443| NPM
-    Router -->|WireGuard| VPN[WireGuard VPN]
+    Router -->|WireGuard UDP| WG
 
     subgraph Host[Ubuntu Application Host]
         NPM[Nginx Proxy Manager] --> Apps[Docker Compose stacks<br/>36 containers / 20+ services]
+        WG[WireGuard VPN]
         Portainer[Portainer]
         Watchtower[Watchtower<br/>auto-updates]
     end
 
-    VPN --> Host
     NAS[(TrueNAS<br/>storage server)] <-->|NFS| Host
     PiHole[Pi-hole<br/>dedicated DNS node] -.->|DNS for LAN| Host
 ```
@@ -31,12 +31,20 @@ flowchart LR
 | Storage server | Bulk storage, snapshots, replication | TrueNAS |
 | DNS node | Network-wide DNS filtering | Pi-hole |
 
+## Hardware
+
+| Machine | Details |
+|---|---|
+| Storage server | TrueNAS Community Edition 25.10.4 (Goldeye), Intel N100, 7.5 GiB RAM, ZFS pool of 4 drives in RAIDZ1 (7.28 TiB each, 21.2 TiB usable) |
+| Application host | Ubuntu laptop, *(specs to add)* |
+| DNS node | Laptop running Pi-hole, *(specs to add)* |
+
 ## Services
 
 | Category | Services |
 |---|---|
 | Files & collaboration | Nextcloud, OnlyOffice |
-| Photos | Immich |
+| Photos | Immich (36,000+ photos and 3,000+ videos) |
 | Media | Jellyfin |
 | Security | Vaultwarden (password manager) |
 | Notes | Joplin |
@@ -50,7 +58,7 @@ flowchart LR
 ## Networking & Security
 
 - **Reverse proxy:** Nginx Proxy Manager routes each service to its own subdomain with HTTPS certificates
-- **Remote access:** WireGuard VPN for private access to the home network
+- **Remote access:** WireGuard VPN running on the application host, reached through a DuckDNS dynamic DNS hostname that points to the router
 - **DNS:** Pi-hole on a dedicated machine for network-wide filtering and local name resolution
 - **Firewall:** only required ports are forwarded; everything else stays internal
 - **Secrets:** no credentials in this repo. Each stack uses a `.env` file that is git-ignored, with a `.env.example` showing required variables
@@ -58,7 +66,8 @@ flowchart LR
 ## Storage & Backups
 
 - **TrueNAS** provides the storage layer, with the application host mounting shares over **NFS**
-- **Snapshots and replication** in TrueNAS protect against accidental deletion and data corruption
+- **ZFS RAIDZ1** pool (4 drives) tolerates a single drive failure, and regular scrubs check data integrity
+- **Daily snapshots** at midnight with 14-week retention protect against accidental deletion and corruption
 - **rsync + cron scripts** back up service data and configs on a schedule
 
 ## Repository Layout
@@ -89,6 +98,7 @@ homelab/
 ## Roadmap
 
 - [ ] Document and run a full restore test from TrueNAS snapshots and rsync backups
+- [ ] Add an offsite backup (cloud sync or replication to a second TrueNAS) to complete a 3-2-1 strategy
 - [ ] Add monitoring and alerting for disk, container, and service health
 - [ ] Publish sanitized Compose files for each stack
 - [ ] Automate provisioning with Ansible
