@@ -1,0 +1,30 @@
+# Secrets and environment files
+.env
+*.env
+!.env.example
+*.key
+*.pem
+*.crt
+wg*.conf
+privatekey
+publickey
+
+# Runtime data and volumes
+data/
+volumes/
+config/
+db/
+*.sqlite
+*.db
+*.log
+
+# Backups and archives
+*.tar
+*.tar.gz
+*.zip
+*.bak
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
