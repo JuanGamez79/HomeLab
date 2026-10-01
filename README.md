@@ -60,6 +60,7 @@ flowchart LR
 | Utilities | MeTube |
 | Networking | Nginx Proxy Manager, WireGuard (PiVPN), Pi-hole |
 | Privacy | Private Internet Access VPN container for torrent traffic |
+| Monitoring | Uptime Kuma, Prometheus, Grafana, node-exporter, cAdvisor |
 
 ## Networking & Security
 
@@ -69,6 +70,7 @@ flowchart LR
 - **Dynamic DNS:** a cron job runs a DuckDNS update script every 5 minutes so the VPN hostname always follows the home IP
 - **DNS:** Pi-hole on a dedicated machine for network-wide filtering and local name resolution
 - **Firewall:** only required ports are forwarded; everything else stays internal
+- **Monitoring & alerting:** Uptime Kuma checks every service, plus the TrueNAS and Pi-hole machines and Pi-hole DNS, and sends Down/Up alerts to Discord. Prometheus and Grafana track host and per-container CPU, RAM and disk. TrueNAS sends pool and drive alerts to the same channel. Alerting was tested by stopping a container ([stack](stacks/monitoring/))
 - **Secrets:** no credentials in this repo. Stacks that need secrets read them from a git-ignored `.env`, with a `.env.example` listing the required variables. Compose files here are sanitized copies of what I run.
 
 ## Storage & Backups
@@ -94,6 +96,7 @@ homelab/
     ├── jellyseer/
     ├── joplin/
     ├── metube/
+    ├── monitoring/
     ├── nextcloud/
     ├── nginx-proxy-manager/
     ├── portainer/
@@ -114,7 +117,8 @@ homelab/
 - [ ] Document the restore procedure and repeat restore tests on a schedule
 - [ ] Automate nightly rsync + cron backups of Docker volumes and configs to the NAS
 - [ ] Add an offsite backup (cloud sync or replication to a second TrueNAS) to complete a 3-2-1 strategy
-- [ ] Add monitoring and alerting for disk, container, and service health
+- [x] Add monitoring and alerting for container, service and pool health
+- [ ] Add scheduled S.M.A.R.T. tests and drive-health graphs
 - [x] Publish sanitized Compose files for each stack
 - [ ] Automate provisioning with Ansible
 
