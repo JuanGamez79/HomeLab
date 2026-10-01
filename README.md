@@ -2,11 +2,11 @@
 
 A self-hosted Linux infrastructure I built and run at home: network storage, **36 Docker containers across 20+ services**, reverse proxy with HTTPS, WireGuard VPN, network-wide DNS filtering, and daily ZFS snapshots.
 
-**Stack:** Ubuntu · TrueNAS · NFS · Docker Compose · Portainer · Nginx Proxy Manager · WireGuard · Pi-hole · cron
+**Stack:** Ubuntu · TrueNAS · NFS · Docker Compose · Portainer · Nginx Proxy Manager · WireGuard (PiVPN) · Pi-hole · Private Internet Access · cron
+
 ## Dashboard
 
 <img width="2724" height="1835" alt="dashboard" src="https://github.com/user-attachments/assets/998e30ba-1808-408c-9994-ba81cd620497" />
-
 
 ---
 
@@ -49,7 +49,7 @@ flowchart LR
 |---|---|
 | Files & collaboration | Nextcloud, OnlyOffice |
 | Photos | Immich (36,000+ photos and 3,000+ videos) |
-| Media | Jellyfin |
+| Media | Jellyfin, Jellyseer |
 | Security | Vaultwarden (password manager) |
 | Notes | Joplin |
 | Fitness | wger |
@@ -57,16 +57,19 @@ flowchart LR
 | Automation | Watchtower (container updates) |
 | Gaming | Crafty Controller (game server management) |
 | AI | Ollama, llama.cpp, Open WebUI, rembg |
-| Networking | Nginx Proxy Manager, WireGuard, Pi-hole |
+| Utilities | MeTube |
+| Networking | Nginx Proxy Manager, WireGuard (PiVPN), Pi-hole |
+| Privacy | Private Internet Access VPN container for torrent traffic |
 
 ## Networking & Security
 
 - **Reverse proxy:** Nginx Proxy Manager routes each service to its own subdomain with HTTPS certificates
-- **Remote access:** WireGuard VPN running on the application host, reached through a DuckDNS dynamic DNS hostname that points to the router
+- **Remote access:** WireGuard installed on the application host with PiVPN, reached through a DuckDNS dynamic DNS hostname that points to the router. One profile per device, so any device can be revoked on its own ([details](docs/wireguard-pivpn.md))
+- **Download privacy:** torrent traffic runs through a separate Private Internet Access VPN container (the `vpn` stack), isolated from remote access
 - **Dynamic DNS:** a cron job runs a DuckDNS update script every 5 minutes so the VPN hostname always follows the home IP
 - **DNS:** Pi-hole on a dedicated machine for network-wide filtering and local name resolution
 - **Firewall:** only required ports are forwarded; everything else stays internal
-- **Secrets:** no credentials in this repo. Each stack uses a `.env` file that is git-ignored, with a `.env.example` showing required variables
+- **Secrets:** no credentials in this repo. Stacks that need secrets read them from a git-ignored `.env`, with a `.env.example` listing the required variables. Compose files here are sanitized copies of what I run.
 
 ## Storage & Backups
 
@@ -77,22 +80,27 @@ flowchart LR
 
 ## Repository Layout
 
-```
 homelab/
 ├── README.md
 ├── docs/
-│   ├── network-diagram.md
-│   └── backup-strategy.md
-├── stacks/
-│   ├── nextcloud/        # docker-compose.yml + .env.example
-│   ├── immich/
-│   ├── jellyfin/
-│   ├── vaultwarden/
-│   └── ...
-├── scripts/
-│   └── backup.sh         # planned: nightly rsync backup of Docker volumes
-└── .gitignore
-```
+│ └── wireguard-pivpn.md
+└── stacks/ # one folder per service: docker-compose.yml, .env.example, README.md
+├── bgRemove/
+├── crafty/
+├── glance/
+├── immich/
+├── jellyfin/
+├── jellyseer/
+├── joplin/
+├── metube/
+├── nextcloud/
+├── nginx-proxy-manager/
+├── portainer/
+├── vaultwarden/
+├── vpn/
+├── watchtower/
+└── wger/
+
 
 ## Lessons Learned
 
@@ -106,7 +114,7 @@ homelab/
 - [ ] Automate nightly rsync + cron backups of Docker volumes and configs to the NAS
 - [ ] Add an offsite backup (cloud sync or replication to a second TrueNAS) to complete a 3-2-1 strategy
 - [ ] Add monitoring and alerting for disk, container, and service health
-- [ ] Publish sanitized Compose files for each stack
+- [x] Publish sanitized Compose files for each stack
 - [ ] Automate provisioning with Ansible
 
 ---
