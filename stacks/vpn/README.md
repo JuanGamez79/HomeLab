@@ -1,6 +1,6 @@
 # vpn
 
-Docker Compose stack for vpn. Part of my [home lab](../../README.md).
+Private Internet Access (PIA) VPN client container stack that routes torrent traffic through the VPN. This is separate from my WireGuard remote access, which runs on the host via PiVPN (see [docs](../../docs/wireguard-pivpn.md)).
 
 ## Setup
 ```bash
