@@ -80,27 +80,28 @@ flowchart LR
 
 ## Repository Layout
 
+```
 homelab/
 ├── README.md
 ├── docs/
-│ └── wireguard-pivpn.md
-└── stacks/ # one folder per service: docker-compose.yml, .env.example, README.md
-├── bgRemove/
-├── crafty/
-├── glance/
-├── immich/
-├── jellyfin/
-├── jellyseer/
-├── joplin/
-├── metube/
-├── nextcloud/
-├── nginx-proxy-manager/
-├── portainer/
-├── vaultwarden/
-├── vpn/
-├── watchtower/
-└── wger/
-
+│   └── wireguard-pivpn.md
+└── stacks/            # one folder per service: docker-compose.yml, .env.example, README.md
+    ├── bgRemove/
+    ├── crafty/
+    ├── glance/
+    ├── immich/
+    ├── jellyfin/
+    ├── jellyseer/
+    ├── joplin/
+    ├── metube/
+    ├── nextcloud/
+    ├── nginx-proxy-manager/
+    ├── portainer/
+    ├── vaultwarden/
+    ├── vpn/
+    ├── watchtower/
+    └── wger/
+```
 
 ## Lessons Learned
 
